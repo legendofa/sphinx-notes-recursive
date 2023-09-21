@@ -1,53 +1,53 @@
 # https://help.github.com/en/articles/metadata-syntax-for-github-actions
-name: 'Sphinx to GitHub Pages'
-description: 'GitHub Action to deploy Sphinx documentation to GitHub Pages'
-author: 'Shengyu Zhang'
+name: "Sphinx to GitHub Pages"
+description: "GitHub Action to deploy Sphinx documentation to GitHub Pages"
+author: "Shengyu Zhang"
 branding:
-  color: 'green'
-  icon: 'upload-cloud'
+  color: "green"
+  icon: "upload-cloud"
 inputs:
   documentation_path:
-    description: 'Path to Sphinx source files'
+    description: "Path to Sphinx source files"
     required: false
-    default: './docs'
+    default: "./docs"
   requirements_path:
-    description: 'Path to requirements file, used in `pip install -r XXX` command'
+    description: "Path to requirements file, used in `pip install -r XXX` command"
     required: false
-    default: './docs/requirements.txt'
+    default: "./docs/requirements.txt"
   pyproject_extras:
-    description: 'Extras of Requirement Specifier, used in `pip install .[XXX]` command'
+    description: "Extras of Requirement Specifier, used in `pip install .[XXX]` command"
     required: false
-    default: 'docs'
+    default: "docs"
   python_version:
-    description: 'Version of Python'
+    description: "Version of Python"
     required: false
-    default: '3.10'
+    default: "3.10"
   sphinx_version:
-    description: 'Version of Sphinx'
+    description: "Version of Sphinx"
     required: false
-    default: ''
+    default: ""
   cache:
-    description: 'Enable cache to speed up documentation building'
+    description: "Enable cache to speed up documentation building"
     required: false
     default: false
   sphinx_build_options:
-    description: 'Additional options passed to sphinx-build'
+    description: "Additional options passed to sphinx-build"
     required: false
-    default: ''
+    default: ""
   checkout:
-    description: 'Whether to automatically checkout the repository, if false, user need to do it byself'
+    description: "Whether to automatically checkout the repository, if false, user need to do it byself"
     required: false
     default: true
   publish:
-    description: 'Whether to automatically publish the pages, if false, user need to manually publish by self'
+    description: "Whether to automatically publish the pages, if false, user need to manually publish by self"
     required: false
     default: true
 outputs:
   page_url:
-    description: 'URL to deployed GitHub Pages, only available when option publish is set to true'
+    description: "URL to deployed GitHub Pages, only available when option publish is set to true"
     value: ${{ steps.deployment.outputs.page_url }}
   artifact:
-    description: 'Directory where artifact (HTML documentation) is stored, user can use it to deploy GitHub Pages manually'
+    description: "Directory where artifact (HTML documentation) is stored, user can use it to deploy GitHub Pages manually"
     value: ${{ steps.build.outputs.artifact }}
 
 runs:
@@ -62,13 +62,14 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
       if: ${{ inputs.checkout == 'true' && inputs.cache == 'false' }}
-
+      with:
+        submodules: recursive
     - name: Setup python
       uses: actions/setup-python@v4
       if: ${{ inputs.cache == 'true' }}
       with:
         python-version: ${{ inputs.python_version }}
-        cache: 'pip'
+        cache: "pip"
     - name: Setup python
       uses: actions/setup-python@v4
       if: ${{ inputs.cache == 'false' }}
@@ -118,7 +119,7 @@ runs:
       if: ${{ inputs.publish == 'true' }}
       with:
         path: ${{ steps.build.outputs.artifact }}
-      
+
     - id: deployment
       name: Deploy to GitHub Pages
       uses: actions/deploy-pages@v2
