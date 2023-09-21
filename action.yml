@@ -57,6 +57,7 @@ runs:
       uses: actions/checkout@v3
       if: ${{ inputs.checkout == 'true' && inputs.cache == 'true' }}
       with:
+        submodules: recursive
         fetch-depth: 0 # Required by git-restore-mtime
     - name: Checkout
       uses: actions/checkout@v3
